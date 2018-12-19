@@ -1116,6 +1116,7 @@ MavlinkReceiver::handle_message_set_actuator_control_target(mavlink_message_t *m
 		if (_control_mode.flag_control_offboard_enabled) {
 
 			actuator_controls.timestamp = hrt_absolute_time();
+                        actuator_controls.bypass_mixer = 1;
 
 			/* Set duty cycles for the servos in the actuator_controls message */
 			for (size_t i = 0; i < 8; i++) {

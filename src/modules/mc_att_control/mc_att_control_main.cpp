@@ -776,6 +776,7 @@ MulticopterAttitudeControl::publish_actuator_controls()
 	_actuators.control[7] = (float)_landing_gear.landing_gear;
 	_actuators.timestamp = hrt_absolute_time();
 	_actuators.timestamp_sample = _sensor_gyro.timestamp;
+        _actuators.bypass_mixer = 0;
 
 	/* scale effort by battery status */
 	if (_bat_scale_en.get() && _battery_status.scale > 0.0f) {
@@ -785,7 +786,9 @@ MulticopterAttitudeControl::publish_actuator_controls()
 	}
 
 	if (!_actuators_0_circuit_breaker_enabled) {
+            if (!_v_control_mode.flag_control_offboard_enabled) {
 		orb_publish_auto(_actuators_id, &_actuators_0_pub, &_actuators, nullptr, ORB_PRIO_DEFAULT);
+            }
 	}
 }
 

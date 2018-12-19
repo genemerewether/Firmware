@@ -1205,6 +1205,15 @@ PX4FMU::cycle()
 				/* apply _motor_ordering */
 				reorder_outputs(pwm_limited);
 
+                                if (_controls[0].bypass_mixer && 
+                                    !(_armed.lockdown || _armed.manual_lockdown)) {
+                                    size_t minSize = sizeof(_controls[0]) < mixed_num_outputs ?
+                                                     sizeof(_controls[0]) : mixed_num_outputs;
+                                    for (size_t i = 0; i < minSize; ++i) {
+                                        pwm_limited[i] = static_cast<uint16_t>(_controls[0].control[i]);
+                                    }
+                                }
+
 				/* output to the servos */
 				if (_pwm_initialized && !_test_mode) {
 					for (size_t i = 0; i < mixed_num_outputs; i++) {
